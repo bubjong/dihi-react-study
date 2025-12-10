@@ -15,9 +15,12 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "dev:client": "npm run dev -w @dihi/react"
+    "dev:client": "npm run dev -w @dihi/react",
+    "dev:server": "npm run dev -w @dihi/server",
+    "start:server": "npm run start -w @dihi/server"
   },
   "workspaces": [
-    "client"
+    "client",
+    "server"
   ]
 }
