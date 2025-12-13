@@ -63,7 +63,10 @@ const posts = [
   },
 ];
 
-fastify.get("/posts", (req, res) => {
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+fastify.get("/posts", async (req, res) => {
+  await delay(1000);
   let page = req.query.page ? Number(req.query.page) : 1;
   if (Number.isNaN(page)) {
     page = 1;
@@ -88,6 +91,14 @@ fastify.get("/posts/:id", (req, res) => {
     return res.status(404).send({ error: "게시글을 찾을 수 없습니다." });
   }
   return post;
+});
+
+fastify.get("/posts/recommended", async (req, res) => {
+  await delay(3000);
+  const recommendedPosts = posts.slice(0, 3);
+  return {
+    posts: recommendedPosts,
+  };
 });
 
 fastify.post("/posts", (req, res) => {

@@ -1,3 +1,9 @@
+.posts-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .posts {
   list-style: none;
   display: flex;
@@ -14,4 +20,10 @@
   &:hover {
     background-color: #f0f0f0;
   }
+}
+
+.recommended-posts {
+  list-style: none;
+  display: flex;
+  gap: 4px;
 }
