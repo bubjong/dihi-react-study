@@ -52,6 +52,7 @@ function RouteComponent() {
       return true;
     },
   });
+
   const navigate = useNavigate();
 
   return (
@@ -62,6 +63,13 @@ function RouteComponent() {
             <Link to="/posts/$postId" params={{ postId: post.id }}>
               {post.title}
             </Link>
+            <button
+              onClick={async () => {
+                // TODO: 게시글 삭제
+              }}
+            >
+              Delete
+            </button>
           </li>
         ))}
       </ul>
@@ -83,22 +91,6 @@ function RouteComponent() {
           </li>
         ))}
       </ol>
-      {/* <Await
-        promise={recommendedPostsResponsePromise}
-        fallback={<div>추천 게시글 로딩중...</div>}
-      >
-        {(recommendedPosts) => (
-          <ul className="recommended-posts">
-            {recommendedPosts.posts.map((post) => (
-              <li className="post" key={post.id}>
-                <Link to="/posts/$postId" params={{ postId: post.id }}>
-                  {post.title}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Await> */}
     </div>
   );
 }
