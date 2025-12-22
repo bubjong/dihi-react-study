@@ -1,3 +1,4 @@
+import { queryOptions } from "@tanstack/react-query";
 import type { Post } from "../$postId/-services/fetch-post";
 
 export type PostsResponse = {
@@ -10,10 +11,10 @@ export type PostsResponse = {
 
 export async function fetchPosts(
   page: number,
-  abortController: AbortController
+  signal: AbortSignal
 ): Promise<PostsResponse> {
   const response = await fetch(`http://localhost:3000/posts?page=${page}`, {
-    signal: abortController.signal,
+    signal,
   });
   if (!response.ok && response.status === 404) {
     const errorJson = await response.json();
@@ -22,3 +23,9 @@ export async function fetchPosts(
   const postsResponse: PostsResponse = await response.json();
   return postsResponse;
 }
+
+export const postsOptions = (page: number) =>
+  queryOptions({
+    queryKey: ["posts", { page }],
+    queryFn: ({ signal }) => fetchPosts(page, signal),
+  });

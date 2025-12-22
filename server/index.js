@@ -72,6 +72,10 @@ fastify.get("/posts", async (req, res) => {
     page = 1;
   }
   const PAGE_SIZE = 3;
+  const totalPages = Math.ceil(posts.length / PAGE_SIZE);
+  if (page > totalPages) {
+    return res.status(404).send({ error: "페이지를 찾을 수 없습니다." });
+  }
   const start = (page - 1) * PAGE_SIZE;
   const end = start + PAGE_SIZE;
   const paginatedPosts = posts.slice(start, end);
