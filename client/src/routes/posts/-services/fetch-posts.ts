@@ -1,19 +1,24 @@
-import { queryOptions } from "@tanstack/react-query";
 import type { Post } from "../$postId/-services/fetch-post";
 
 export type PostsResponse = {
   posts: Post[];
-  total: number;
-  pageSize: number;
-  page: number;
-  totalPages: number;
+  nextCursor: string | null;
+  hasMore: boolean;
 };
 
 export async function fetchPosts(
-  page: number,
-  signal: AbortSignal
+  cursor: string | null,
+  pageSize: number,
+  signal?: AbortSignal
 ): Promise<PostsResponse> {
-  const response = await fetch(`http://localhost:3000/posts?page=${page}`, {
+  const urlSearchParams = new URLSearchParams();
+  if (cursor) {
+    urlSearchParams.set("cursor", cursor);
+  }
+  urlSearchParams.set("pageSize", pageSize.toString());
+  const url = new URL("http://localhost:3000/infinite-posts");
+  url.search = urlSearchParams.toString();
+  const response = await fetch(url.toString(), {
     signal,
   });
   if (!response.ok && response.status === 404) {
@@ -23,9 +28,3 @@ export async function fetchPosts(
   const postsResponse: PostsResponse = await response.json();
   return postsResponse;
 }
-
-export const postsOptions = (page: number) =>
-  queryOptions({
-    queryKey: ["posts", { page }],
-    queryFn: ({ signal }) => fetchPosts(page, signal),
-  });
