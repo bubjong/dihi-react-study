@@ -72,6 +72,24 @@ let posts = [
     content: "게시글 10 내용",
     bookmark: false,
   },
+  {
+    id: new Date("2025-11-11").getTime().toString(),
+    title: "게시글 11",
+    content: "게시글 11 내용",
+    bookmark: false,
+  },
+  {
+    id: new Date("2025-11-12").getTime().toString(),
+    title: "게시글 12",
+    content: "게시글 12 내용",
+    bookmark: false,
+  },
+  {
+    id: new Date("2025-11-13").getTime().toString(),
+    title: "게시글 13",
+    content: "게시글 13 내용",
+    bookmark: false,
+  },
 ];
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -96,6 +114,30 @@ fastify.get("/posts", async (req, res) => {
     pageSize: PAGE_SIZE,
     page,
     totalPages: Math.ceil(posts.length / PAGE_SIZE),
+  };
+});
+
+fastify.get("/infinite-posts", async (req, res) => {
+  await delay(1000);
+  let cursor = req.query.cursor;
+  if (!cursor) {
+    cursor = posts[0].id;
+  }
+  let pageSize = req.query.pageSize ? Number(req.query.pageSize) : 3;
+  if (Number.isNaN(pageSize)) {
+    pageSize = 3;
+  }
+  const post = posts.find((post) => post.id === cursor);
+  if (!post) {
+    return res.status(404).send({ error: "게시글을 찾을 수 없습니다." });
+  }
+  const postIndex = posts.indexOf(post);
+  const paginatedPosts = posts.slice(postIndex, postIndex + pageSize);
+  const nextCursor = posts[postIndex + pageSize]?.id;
+  return {
+    posts: paginatedPosts,
+    nextCursor: nextCursor ?? null,
+    hasMore: nextCursor !== undefined,
   };
 });
 
